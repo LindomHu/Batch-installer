@@ -12,7 +12,7 @@ import tkinter as tk
 from tkinter import *  # 导入 Tkinter 库
 import multiprocessing
 import threading
-from InstallItem import InstallItem
+from BatchInstall import InstallItem
 
 
 class DeviceManager():
