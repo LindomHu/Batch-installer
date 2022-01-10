@@ -29,11 +29,14 @@ class InstallItem:
         self.lab_device = tk.Label(self.root, text=device)
         self.lab_device.grid(row=index+2,column=1,stick='w')
 
-        self.entry_apk = Entry(self.root, width=50, textvariable=self.entry_default)
+        self.entry_apk = Entry(self.root, width=45, textvariable=self.entry_default)
         self.entry_apk.grid(row=index+2,column=2,stick='w')
 
         self.button_install = Button(self.root, text="安装",command=self.thread_install_apk)
         self.button_install.grid(row=index+2,column=4,stick='w')
+
+        self.button_uninstall = Button(self.root, text="卸载", bg="LightSteelBlue", command=self.thread_uninstall_apk)
+        self.button_uninstall.grid(row=index + 2, column=3, stick='w')
 
         self.button_logcat_c = Button(self.root,text="删logcat日志",command=self.logcat_c)
         self.button_logcat_c.grid(row=index+2,column=7,stick='w')
@@ -56,6 +59,7 @@ class InstallItem:
 
     def destroy(self):
         self.button_install.destroy()
+        self.button_uninstall.destroy()
         self.button_logcat_c.destroy()
         self.button_logcat_log.destroy()
         self.button_delete_GCloudlog.destroy()
@@ -174,13 +178,25 @@ class InstallItem:
 
 
     def install_apk(self):
-        # 安装游戏
+        # 安装Apk
         # print(self.entry_apk.get())
         # cmd_install = "adb -s " + self.device + " install -r " + self.DeviceManager.get_apk_path() + "\\" + self.entry_apk.get())
         cmd_install = "adb -s {0} install -r {1}/{2}".format(self.device,self.DeviceManager.apk_path.get(),self.entry_apk.get())
         print("installing ", cmd_install)
         os.system(cmd_install)
 
+    def uninstall_apk(self):
+        # 卸载apk
+        # print(self.entry_apk.get())
+        # cmd_install = "adb -s " + self.device + " install -r " + self.DeviceManager.get_apk_path() + "\\" + self.entry_apk.get())
+        cmd_uninstall = "adb -s {0} uninstall com.tencent.itop.example".format(self.device)
+        print("uninstalling ", cmd_uninstall)
+        os.system(cmd_uninstall)
+
     def thread_install_apk(self):#用多线程来安装，不然点击安装后会卡住主线程，无法实现多apk同时安装
         t = threading.Thread(target=self.install_apk, )
         t.start()
+
+    def thread_uninstall_apk(self):#用多线程来安装，不然点击安装后会卡住主线程，无法实现多apk同时安装
+        t1 = threading.Thread(target=self.uninstall_apk, )
+        t1.start()
