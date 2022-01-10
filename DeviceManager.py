@@ -212,11 +212,11 @@ class DeviceManager():
     def draw_label_text(self):
         label_text1 = tk.Label(self.root, text="提示：点击[关闭adb]/[停止抓logcat日志]之后需要重新点击[刷新adb]",
                               foreground="Yellow",background="Gray",)
-        label_text1.place(x=696,y=67)
+        label_text1.place(x=700,y=67)
 
         label_text2 = tk.Label(self.root, text="如果在Mac上运行，日志保存路径需要手动填写，默认的会找不到",
                               foreground="Yellow",background="Gray",)
-        label_text2.place(x=696,y=90)
+        label_text2.place(x=700,y=90)
 
     def mainloop(self):
         self.draw_log_path()
