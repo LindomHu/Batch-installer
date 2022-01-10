@@ -23,7 +23,7 @@ class InstallItem:
         self.DeviceManager = DeviceManager
         self.device  = device
         self.entry_default = StringVar()
-        self.entry_default.set("请输入apk完整包名，如：test_android.apk")
+        self.entry_default.set("请输入apk完整包名, 如：test.apk")
 
         self.root=root
         self.lab_device = tk.Label(self.root, text=device)
@@ -56,10 +56,12 @@ class InstallItem:
 
     def destroy(self):
         self.button_install.destroy()
-        self.button_delete_GCloudlog.destroy()
-        self.button_pull_GCloudlog.destroy()
         self.button_logcat_c.destroy()
         self.button_logcat_log.destroy()
+        self.button_delete_GCloudlog.destroy()
+        self.button_pull_GCloudlog.destroy()
+        self.button_delete_Corelog.destroy()
+        self.button_pull_Corelog.destroy()
         self.entry_apk.destroy()
         self.lab_device.destroy()
 
@@ -91,7 +93,7 @@ class InstallItem:
         else:
             device_name = self.device
         computer_copy_path = self.DeviceManager.get_GCloudlog_path() +'\\' + device_name+"\\" # 本地的路径，存在指定的文件夹再加上设备名作为区分
-        print("\033[1;32GCloud日志拉取到本地的路径：%s\033[0m"%computer_copy_path)
+        print("GCloud日志拉取到本地的路径：%s"%computer_copy_path)
 
         if not os.path.exists(computer_copy_path):
             os.makedirs(computer_copy_path)
@@ -128,7 +130,7 @@ class InstallItem:
         else:
             device_name = self.device
         computer_copy_path = self.DeviceManager.get_GCloudlog_path() +'\\' + device_name+"\\" # 本地的路径，存在指定的文件夹再加上设备名作为区分
-        print("\033[1;32GCloudCore日志拉取到本地的路径：%s\033[0m"%computer_copy_path)
+        print("GCloudCore日志拉取到本地的路径：%s"%computer_copy_path)
 
         if not os.path.exists(computer_copy_path):
             os.makedirs(computer_copy_path)
@@ -156,7 +158,7 @@ class InstallItem:
         else:
             device_name = self.device
         computer_save_path = self.DeviceManager.get_logcat_path() + '\\' + device_name + "\\"# 本地的路径，存在指定的文件夹再加上设备名作为区分
-        print("\033[1;32logcat日志保存到本地的路径：%s\033[0m"%computer_save_path)
+        print("logcat日志保存到本地的路径：%s"%computer_save_path)
 
         if not os.path.exists(computer_save_path):
             os.makedirs(computer_save_path)
