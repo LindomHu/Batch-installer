@@ -12,13 +12,12 @@ from tkinter import *  # 导入 Tkinter 库
 import os
 import time
 import threading
+import platform
 
 
 
 
 class InstallItem:
-
-
     def __init__(self,root,device,index,DeviceManager):
         self.DeviceManager = DeviceManager
         self.device  = device
@@ -96,7 +95,13 @@ class InstallItem:
             device_name = self.device.replace(':', '-')  # 这里用来处理模拟器多开，冒号在路径名中无法使用，所以替换一下
         else:
             device_name = self.device
-        computer_copy_path = self.DeviceManager.get_GCloudlog_path() +'\\' + device_name+"\\" # 本地的路径，存在指定的文件夹再加上设备名作为区分
+
+        platform_system = platform.system()
+        Win = "Windows"
+        if platform_system == Win:
+            computer_copy_path = self.DeviceManager.get_GCloudlog_path() +'\\' + device_name+"\\" # 本地的路径，存在指定的文件夹再加上设备名作为区分
+        else:
+            computer_copy_path = self.DeviceManager.get_GCloudlog_path() +'/' + device_name+"/" # 本地的路径，存在指定的文件夹再加上设备名作为区分
         print("GCloud日志拉取到本地的路径：%s"%computer_copy_path)
 
         if not os.path.exists(computer_copy_path):
@@ -133,7 +138,13 @@ class InstallItem:
             device_name = self.device.replace(':', '-')  # 这里用来处理模拟器多开，冒号在路径名中无法使用，所以替换一下
         else:
             device_name = self.device
-        computer_copy_path = self.DeviceManager.get_GCloudlog_path() +'\\' + device_name+"\\" # 本地的路径，存在指定的文件夹再加上设备名作为区分
+
+        platform_system = platform.system()
+        Win = "Windows"
+        if platform_system == Win:
+            computer_copy_path = self.DeviceManager.get_Corelog_path() +'\\' + device_name+"\\" # 本地的路径，存在指定的文件夹再加上设备名作为区分
+        else:
+            computer_copy_path = self.DeviceManager.get_Corelog_path() +'/' + device_name+"/" # 本地的路径，存在指定的文件夹再加上设备名作为区分
         print("GCloudCore日志拉取到本地的路径：%s"%computer_copy_path)
 
         if not os.path.exists(computer_copy_path):
@@ -161,7 +172,13 @@ class InstallItem:
             device_name = self.device.replace(':', '-')  # 这里用来处理模拟器多开，冒号在路径名中无法使用，所以替换一下
         else:
             device_name = self.device
-        computer_save_path = self.DeviceManager.get_logcat_path() + '\\' + device_name + "\\"# 本地的路径，存在指定的文件夹再加上设备名作为区分
+
+        platform_system = platform.system()
+        Win = "Windows"
+        if platform_system == Win:
+            computer_save_path = self.DeviceManager.get_logcat_path() +'\\' + device_name+"\\" # 本地的路径，存在指定的文件夹再加上设备名作为区分
+        else:
+            computer_save_path = self.DeviceManager.get_logcat_path() +'/' + device_name+"/" # 本地的路径，存在指定的文件夹再加上设备名作为区分
         print("logcat日志保存到本地的路径：%s"%computer_save_path)
 
         if not os.path.exists(computer_save_path):
