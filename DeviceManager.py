@@ -13,6 +13,8 @@ from tkinter import *  # 导入 Tkinter 库
 from tkinter.filedialog import askdirectory
 import multiprocessing
 import threading
+import platform
+import getpass
 from BatchInstall import InstallItem
 
 
@@ -29,15 +31,40 @@ class DeviceManager():
         self.root = Tk()
         self.root.geometry('1339x450')
         self.root.title("DeviceManager")
-        self.logcat_path = StringVar()
-        self.logcat_path.set("D:\\DeviceManager\\LogcatLog")
-        self.GCloudlog_path=StringVar()
-        self.GCloudlog_path.set("D:\\DeviceManager\\GCloudSDKLog")
-        self.Corelog_path = StringVar()
-        self.Corelog_path.set("D:\\DeviceManager\\GCloudSDKLog")
+        self.user = getpass.getuser()
+
+        platform_system = platform.system()
+        Win = "Windows"
+        if platform_system == Win:
+            self.win_logcat_path = ("D:\\DeviceManager\\LogcatLog")
+            self.logcat_path = StringVar()
+            self.logcat_path.set(self.win_logcat_path)
+
+            self.win_GCloudlog_path = ("D:\\DeviceManager\\GCloudSDKLog")
+            self.GCloudlog_path=StringVar()
+            self.GCloudlog_path.set(self.win_GCloudlog_path)
+
+            self.win_Corelog_path = ("D:\\DeviceManager\\GCloudSDKLog")
+            self.Corelog_path = StringVar()
+            self.Corelog_path.set(self.win_Corelog_path)
+
+        else:
+            self.mac_logcat_path = ("/Users/" + self.user + "/Downloads/LogcatLog")
+            self.logcat_path = StringVar()
+            self.logcat_path.set(self.mac_logcat_path)
+
+            self.mac_GCloudlog_path = ("/Users/" + self.user + "/Downloads/GCloudSDKLog")
+            self.GCloudlog_path=StringVar()
+            self.GCloudlog_path.set(self.mac_GCloudlog_path)
+
+            self.mac_Corelog_path = ("/Users/" + self.user + "/Downloads/GCloudSDKLog")
+            self.Corelog_path = StringVar()
+            self.Corelog_path.set(self.mac_Corelog_path)
+
 
         self.apk_path = StringVar()
         self.apk_path.set("D:\\")
+
         #连接模拟器
         self.init_port =IntVar()
 
@@ -76,7 +103,7 @@ class DeviceManager():
 
 
     def draw_log_path(self):
-        label_logcat=tk.Label(self.root, text="Logcat日志保存路径:")
+        label_logcat=tk.Label(self.root, text="Logcat日志保存外层路径:")
         label_logcat.grid(row=0,column=1,sticky='w')
 
         entry_logcat_path = Entry(self.root, width=45, textvariable=self.logcat_path)
@@ -85,20 +112,20 @@ class DeviceManager():
         button_open_logcat_path = Button(self.root, text="打开", command=lambda: self.open_file(entry_logcat_path.get()))
         button_open_logcat_path.grid(row=0 ,column=4)
 
-        label_log1 = tk.Label(self.root, text="GCloud日志保存路径:")
+        label_log1 = tk.Label(self.root, text="GCloud日志保存外层路径:")
         label_log1.grid(row=1, column=1, sticky='w')
 
         entry_log_path1 = Entry(self.root, width=45, textvariable=self.GCloudlog_path)
         entry_log_path1.grid(row=1, column=2, sticky='w')
 
         # print(entry_log_path)
-        button_open_log1 = Button(self.root, text="打开", command=lambda: self.open_file(entry_log_path.get()))
+        button_open_log1 = Button(self.root, text="打开", command=lambda: self.open_file(entry_log_path1.get()))
         button_open_log1.grid(row=1, column=4)
 
-        label_log2 = tk.Label(self.root, text="GCloudCore日志保存路径:")
+        label_log2 = tk.Label(self.root, text="GCloudCore日志保存外层路径:")
         label_log2.grid(row=2, column=1, sticky='w')
 
-        entry_log_path2 = Entry(self.root, width=45, textvariable=self.GCloudlog_path)
+        entry_log_path2 = Entry(self.root, width=45, textvariable=self.Corelog_path)
         entry_log_path2.grid(row=2, column=2, sticky='w')
 
         # print(entry_log_path)
@@ -210,13 +237,13 @@ class DeviceManager():
             self.root.grid_columnconfigure((0,3,5), minsize=20)
 
     def draw_label_text(self):
-        label_text1 = tk.Label(self.root, text="提示：点击[关闭adb]/[停止抓logcat日志]之后需要重新点击[刷新adb]",
+        label_text1 = tk.Label(self.root, text="提示：点击[关闭adb]/[停止抓logcat日志]之后需要重新点击2次[刷新adb]",
                               foreground="Yellow",background="Gray",)
-        label_text1.place(x=700,y=67)
+        label_text1.place(x=702,y=67)
 
         label_text2 = tk.Label(self.root, text="如果在Mac上运行，日志保存路径需要手动填写，默认的会找不到",
                               foreground="Yellow",background="Gray",)
-        label_text2.place(x=700,y=90)
+        label_text2.place(x=702,y=90)
 
     def mainloop(self):
         self.draw_log_path()
