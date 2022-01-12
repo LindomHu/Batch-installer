@@ -23,56 +23,46 @@ class InstallItem:
     def __init__(self,root,device,index,DeviceManager):
         self.DeviceManager = DeviceManager
         self.device  = device
+        self.root = root
         # 选择Apk
-        def choose_file():
-            selectFileName = tkinter.filedialog.askopenfilename(title='选择文件')  # 选择文件
-            self.entry_default.set(selectFileName)
-
         self.entry_default = StringVar()
         self.entry_default.set("请选择一个Apk文件")
 
-        def thread_choose_file(self):
-            tc = threading.Thread(target=choose_file(), )
-            tc.start()
-
-
-        self.root=root
         self.lab_device = tk.Label(self.root, text=device)
-        self.lab_device.grid(row=index+2,column=1,stick='w')
+        self.lab_device.grid(row=index+1,column=1,stick='w')
 
         self.entry_apk = Entry(self.root, width=45, textvariable=self.entry_default)
-        self.entry_apk.grid(row=index+2,column=2,stick='w')
+        self.entry_apk.grid(row=index+1,column=2,stick='w')
 
-        self.select_apk_button = tk.Button(self.root, text ="选择Apk", command = thread_choose_file )
-        self.select_apk_button.grid(row=index+2,column=5,stick='w')
-
+        self.select_apk_button = tk.Button(self.root, text ="选择Apk", command = self.thread_choose_file)
+        self.select_apk_button.grid(row=index+1,column=5,stick='w')
 
         # 安装
         self.button_install = Button(self.root, text="安装", bg="LightSteelBlue", command=self.thread_install_apk)
-        self.button_install.grid(row=index+2,column=4,stick='w')
+        self.button_install.grid(row=index+1,column=4,stick='w')
 
         # 卸载
         self.button_uninstall = Button(self.root, text="卸载", command=self.thread_uninstall_apk)
-        self.button_uninstall.grid(row=index + 2, column=3, stick='w')
+        self.button_uninstall.grid(row=index+1, column=3, stick='w')
 
         # 日志
         self.button_logcat_c = Button(self.root,text="删logcat日志",command=self.logcat_c)
-        self.button_logcat_c.grid(row=index+2,column=7,stick='w')
+        self.button_logcat_c.grid(row=index+1,column=7,stick='w')
 
         self.button_logcat_log = Button(self.root,text="抓logcat日志",bg="LightSteelBlue", command=self.logcat_log)
-        self.button_logcat_log.grid(row=index+2,column=8,stick='w')
+        self.button_logcat_log.grid(row=index+1,column=8,stick='w')
 
         self.button_delete_GCloudlog = Button(self.root,text="删GCloud日志",command=self.delete_GCloudlog)
-        self.button_delete_GCloudlog.grid(row=index+2,column=9,stick='w')
+        self.button_delete_GCloudlog.grid(row=index+1,column=9,stick='w')
 
         self.button_pull_GCloudlog = Button(self.root,text="拉GCloud日志",bg="LightSteelBlue", command=self.pull_GCloudlog)
-        self.button_pull_GCloudlog.grid(row=index+2,column=10,stick='w')
+        self.button_pull_GCloudlog.grid(row=index+1,column=10,stick='w')
 
         self.button_delete_Corelog = Button(self.root, text="删GCloudCore日志", command=self.delete_Corelog)
-        self.button_delete_Corelog.grid(row=index + 2, column=11, stick='w')
+        self.button_delete_Corelog.grid(row=index+1, column=11, stick='w')
 
         self.button_pull_Corelog = Button(self.root, text="拉GCloudCore日志", bg="LightSteelBlue", command=self.pull_Corelog)
-        self.button_pull_Corelog.grid(row=index + 2, column=12, stick='w')
+        self.button_pull_Corelog.grid(row=index+1, column=12, stick='w')
 
 
     def destroy(self):
@@ -205,11 +195,13 @@ class InstallItem:
         print(cmd_logcat)
         os.popen(cmd_logcat)
 
+    def choose_file(self):
+        selectFileName = tkinter.filedialog.askopenfilename(title='选择文件')  # 选择文件
+        self.entry_default.set(selectFileName)
 
     def set_file_name(self):#设置文件名
          now=time.strftime("%Y-%m-%d-%H-%M-%S",time.localtime(time.time()))
          return now
-
 
     def install_apk(self):
         # 安装Apk
@@ -217,23 +209,25 @@ class InstallItem:
         # 通过选择Apk根目录来安装
         # cmd_install = "adb -s {0} install -r {1}/{2}".format(self.device,self.DeviceManager.apk_path.get(),self.entry_apk.get())
         # 选择Apk文件安装
-        cmd_install = "adb -s {0} install -r {1}".format(self.device,self.entry_apk.get())
+        cmd_install = 'adb -s {0} install -r "{1}"'.format(self.device,self.entry_apk.get())
         print("installing ", cmd_install)
         os.system(cmd_install)
 
     def uninstall_apk(self):
         # 卸载apk
-        # print(self.entry_apk.get())
         # cmd_install = "adb -s " + self.device + " install -r " + self.DeviceManager.get_apk_path() + "\\" + self.entry_apk.get())
         cmd_uninstall = "adb -s {0} uninstall com.tencent.itop.example".format(self.device)
         print("uninstalling ", cmd_uninstall)
         os.system(cmd_uninstall)
 
-
-    def thread_install_apk(self):#用多线程来安装，不然点击安装后会卡住主线程，无法实现多apk同时安装
-        t = threading.Thread(target=self.install_apk, )
-        t.start()
-
-    def thread_uninstall_apk(self):#用多线程来安装，不然点击安装后会卡住主线程，无法实现多apk同时安装
-        t1 = threading.Thread(target=self.uninstall_apk, )
+    def thread_choose_file(self):
+        t1 = threading.Thread(target=self.choose_file, )
         t1.start()
+
+    def thread_install_apk(self):     #用多线程来安装，不然点击安装后会卡住主线程，无法实现多apk同时安装
+        t2 = threading.Thread(target=self.install_apk, )
+        t2.start()
+
+    def thread_uninstall_apk(self):   #用多线程来卸载，不然点击卸载后可能会卡住主线程
+        t3 = threading.Thread(target=self.uninstall_apk, )
+        t3.start()
