@@ -169,19 +169,21 @@ class DeviceManager():
         print("刷新adb")
         try:
             cmd1 = 'adb devices'
-            # cmd2 = 'adb connect 127.0.0.1:5555'  #解决如果先运行工具（脚本），再启动腾讯手游助手，刷新 adb 手游助手刷不出来的问题
+            cmd2 = 'adb connect 127.0.0.1:5555'  #解决如果先运行工具（脚本），再启动腾讯手游助手，刷新 adb 手游助手刷不出来的问题
             os.popen(cmd1)
-            # os.popen(cmd2)
+            os.popen(cmd2)
         except EXCEPTION as e:
             print(e)
 
-        old_device_list =self.device_list
-        new_device_list =self.get_device_list()
+        old_device_list = self.device_list
+        new_device_list = self.get_device_list()
         #old-new 的差集用old_new表示
         old_new  = set(old_device_list)-set(new_device_list)
+        print("new-devicelist:",list(new_device_list))
         print("old-new:",list(old_new))
         for item in self.install_item_list:
             if item.device in list(old_new):
+                print(item.device)
                 item.destroy()
 
         #new-old 的差集用new_old表示
@@ -203,6 +205,7 @@ class DeviceManager():
     def start_connect_device_thread(self):
         print(self.increase_num.get())
         for i in range(self.increase_num.get()):
+            print(i)
             t= threading.Thread(target=self.connect_device,args=(i,))
             t.start()
 
@@ -227,6 +230,7 @@ class DeviceManager():
     def draw_installer_item(self,device_list,old_device_num=0):
         for index,device in enumerate(device_list):
             start_row=index+old_device_num+2
+            print(start_row)
             install_item=InstallItem(self.root,device,start_row,self)
             self.install_item_list.append(install_item)
             self.root.grid_columnconfigure((0,3,5), minsize=20)
@@ -247,7 +251,9 @@ class DeviceManager():
     def get_device_list(self):  #得到设备列表
         os.system("adb devices")
         res = os.popen("adb devices").readlines()
+        print("res:",res)
         device_list = [sub.split('\t')[0] for sub in res[1:-1]]
+        print(device_list)
        # device_list = [sub for sub in res[1:-1]]
         return device_list
 
