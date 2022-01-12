@@ -29,7 +29,7 @@ class DeviceManager():
             print(e)
 
         self.root = Tk()
-        self.root.geometry('1339x450')
+        self.root.geometry('1345x450')
         self.root.title("DeviceManager")
         self.user = getpass.getuser()
 
@@ -60,10 +60,6 @@ class DeviceManager():
             self.mac_Corelog_path = ("/Users/" + self.user + "/Downloads/GCloudSDKLog")
             self.Corelog_path = StringVar()
             self.Corelog_path.set(self.mac_Corelog_path)
-
-
-        self.apk_path = StringVar()
-        self.apk_path.set("D:\\")
 
         #连接模拟器
         self.init_port =IntVar()
@@ -98,8 +94,8 @@ class DeviceManager():
     def get_Corelog_path(self):#得到log存放路径
         return self.Corelog_path.get()
 
-    def get_apk_path(self):#得到apk更目录路径
-        return self.apk_path
+    # def get_apk_path(self):#得到apk更目录路径
+    #     return self.apk_path
 
 
     def draw_log_path(self):
@@ -118,7 +114,6 @@ class DeviceManager():
         entry_log_path1 = Entry(self.root, width=45, textvariable=self.GCloudlog_path)
         entry_log_path1.grid(row=1, column=2, sticky='w')
 
-        # print(entry_log_path)
         button_open_log1 = Button(self.root, text="打开", command=lambda: self.open_file(entry_log_path1.get()))
         button_open_log1.grid(row=1, column=4)
 
@@ -128,7 +123,6 @@ class DeviceManager():
         entry_log_path2 = Entry(self.root, width=45, textvariable=self.Corelog_path)
         entry_log_path2.grid(row=2, column=2, sticky='w')
 
-        # print(entry_log_path)
         button_open_log2 = Button(self.root, text="打开", command=lambda: self.open_file(entry_log_path2.get()))
         button_open_log2.grid(row=2, column=4)
 
@@ -212,22 +206,23 @@ class DeviceManager():
             t= threading.Thread(target=self.connect_device,args=(i,))
             t.start()
 
-
-    def draw_apk_path(self):
-        def selectPath():
-            path_ = askdirectory()
-            path.set(path_)
-
-        path = StringVar()
-        self.apk_path = path
-        label_apk_path = tk.Label(self.root, text="APK根目录:")
-        label_apk_path.grid(row=3, column=1, sticky='w')
-
-        entry_apk_path = Entry(self.root, width=45, textvariable=self.apk_path)
-        entry_apk_path.grid(row=3, column=2, sticky='w')
-
-        button_select_apkPath = Button(self.root, text="选择", command=selectPath)
-        button_select_apkPath.grid(row=3, column=4)
+    # 选择Apk根目录
+    # def draw_apk_path(self):
+    #     def selectPath():
+    #         path_ = askdirectory()
+    #         path.set(path_)
+    #     path = StringVar()
+    #     self.apk_path = path
+    #     self.apk_path = StringVar()
+    #     self.apk_path.set("D:\\")
+    #     label_apk_path = tk.Label(self.root, text="APK根目录:")
+    #     label_apk_path.grid(row=3, column=1, sticky='w')
+    #
+    #     entry_apk_path = Entry(self.root, width=45, textvariable=self.apk_path)
+    #     entry_apk_path.grid(row=3, column=2, sticky='w')
+    #
+    #     button_select_apkPath = Button(self.root, text="选择", command=selectPath)
+    #     button_select_apkPath.grid(row=3, column=4)
 
     def draw_installer_item(self,device_list,old_device_num=0):
         for index,device in enumerate(device_list):
@@ -239,33 +234,22 @@ class DeviceManager():
     def draw_label_text(self):
         label_text1 = tk.Label(self.root, text="提示：点击[关闭adb]/[停止抓logcat日志]之后需要重新点击2次[刷新adb]",
                               foreground="Yellow",background="Gray",)
-        label_text1.place(x=702,y=67)
-
-        label_text2 = tk.Label(self.root, text="如果在Mac上运行，日志保存路径需要手动填写，默认的会找不到",
-                              foreground="Yellow",background="Gray",)
-        label_text2.place(x=702,y=90)
+        label_text1.place(x=703,y=62)
 
     def mainloop(self):
         self.draw_log_path()
         self.draw_device_connect()
-        self.draw_apk_path()
+        # self.draw_apk_path()
         self.draw_installer_item(self.device_list)
         self.draw_label_text()
         self.root.mainloop()
 
-    def get_device_list(self):#得到设备列表
+    def get_device_list(self):  #得到设备列表
         os.system("adb devices")
         res = os.popen("adb devices").readlines()
         device_list = [sub.split('\t')[0] for sub in res[1:-1]]
        # device_list = [sub for sub in res[1:-1]]
         return device_list
 
-    def open_file(self,path):#打开文件
+    def open_file(self,path):  #打开文件
         os.system("explorer "+path)
-
-
-
-# if __name__=='__main__':
-#     multiprocessing.freeze_support()#不加这句打包成exe后会出现死循环
-#     apkInstaller= DeviceManager()
-#     apkInstaller.mainloop()
