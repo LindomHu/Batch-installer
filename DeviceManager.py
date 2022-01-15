@@ -23,8 +23,8 @@ class DeviceManager():
 
     def __init__(self):
         try:
-            cmd = 'adb connect 127.0.0.1:5555'  # 腾讯手游模拟器比较常用，所以写在程序里
-            os.system(cmd)
+            adb_connect = 'adb connect 127.0.0.1:5555'  # 腾讯手游模拟器比较常用，所以写在程序里
+            os.system(adb_connect)
         except EXCEPTION as e:
             print(e)
 
@@ -70,7 +70,9 @@ class DeviceManager():
         self.increase_num.set(1)
 
         self.apk_name = StringVar()
-        self.apk_name.set("请输入apk完整包名")
+        self.apk_name.set("请选择一个apk安装")
+        self.ipa_name = StringVar()
+        self.ipa_name.set("请选择一个ipa安装")
         self.select_device_list =[]
         self.device_list = self.get_device_list()
         self.cb_list =[]
@@ -96,7 +98,6 @@ class DeviceManager():
 
     # def get_apk_path(self):#得到apk更目录路径
     #     return self.apk_path
-
 
     def draw_log_path(self):
         label_logcat=tk.Label(self.root, text="Logcat日志保存外层路径:")
@@ -129,17 +130,26 @@ class DeviceManager():
         # 刷新adb
         button_refresh = Button(self.root, text="刷新adb", bg="LightSteelBlue", command=lambda: self.refresh_adb())
         button_refresh.grid(row=0, column=7)
+
+        # 刷新tid
+        button_refresh_tid = Button(self.root, text="刷新tid", bg="LightSteelBlue", command=lambda: self.refresh_tid())
+        button_refresh_tid.grid(row=0, column=8)
+
         # 关闭adb
         button_close_adb = Button(self.root, text="关闭adb", bg="DarkGray",command=self.close_adb)
         button_close_adb.grid(row=0, column=9)
 
+        # 重启tid
+        # button_close_adb = Button(self.root, text="重启tid", bg="DarkGray", command=self.reboot_tid())
+        # button_close_adb.grid(row=0, column=10)
+
         # 连接模拟器
         button_connect_device = Button(self.root, text="连接模拟器", command=self.start_connect_device_thread)
-        button_connect_device.grid(row=0, column=10)
+        button_connect_device.grid(row=0, column=11)
 
         # 过关闭adb停止抓logcat日志
         button_close_adb = Button(self.root, text="停止抓logcat日志", bg="DarkGray",command=self.close_adb)
-        button_close_adb.grid(row=0, column=11)
+        button_close_adb.grid(row=0, column=12)
 
     def draw_device_connect(self):
         label_device_start_port = tk.Label(self.root,text="起始端口:")
@@ -159,19 +169,35 @@ class DeviceManager():
     def close_adb(self):
         print("关闭 adb")
         try:
-            cmd = 'adb kill-server'
-            os.system(cmd)
+            adb_kill = 'adb kill-server'
+            os.system(adb_kill)
         except EXCEPTION as e:
             print(e)
+
+    # def reboot_tid(self):
+    #     print("重启 tid")
+    #     try:
+    #         tid_reboot = 'tidevice reboot'
+    #         os.system(tid_reboot)
+    #     except EXCEPTION as e:
+    #         print(e)
 
 
     def refresh_adb(self):
         print("刷新adb")
         try:
-            cmd1 = 'adb devices'
-            cmd2 = 'adb connect 127.0.0.1:5555'  #解决如果先运行工具（脚本），再启动腾讯手游助手，刷新 adb 手游助手刷不出来的问题
-            os.popen(cmd1)
-            os.popen(cmd2)
+            adb_refresh1 = 'adb devices'
+            adb_refresh2 = 'adb connect 127.0.0.1:5555'  #解决如果先运行工具（脚本），再启动腾讯手游助手，刷新 adb 手游助手刷不出来的问题
+            os.popen(adb_refresh1)
+            os.popen(adb_refresh2)
+        except EXCEPTION as e:
+            print(e)
+
+    def refresh_tid(self):
+        print("刷新tid")
+        try:
+            tid_refresh = 'tidevice list'
+            os.popen(tid_refresh)
         except EXCEPTION as e:
             print(e)
 
@@ -196,9 +222,9 @@ class DeviceManager():
         try:
             port =self.init_port.get()+index
             print(port)
-            cmd = 'adb connect 127.0.0.1:'+str(port)
-            print(cmd)
-            os.system(cmd)
+            adb_connect = 'adb connect 127.0.0.1:'+str(port)
+            print(adb_connect)
+            os.system(adb_connect)
         except:
             print("连接第%d个模拟器有问题" % index)
 

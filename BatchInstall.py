@@ -64,6 +64,17 @@ class InstallItem:
         self.button_pull_Corelog = Button(self.root, text="拉GCloudCore日志", bg="LightSteelBlue", command=self.pull_Corelog)
         self.button_pull_Corelog.grid(row=index+1, column=12, stick='w')
 
+        # 安装ipa
+        self.button_install_ipa = Button(self.root, text="安装ipa", bg="LightSteelBlue", command=self.thread_install_ipa)
+        self.button_install_ipa.grid(row=index + 1, column=4, stick='w')
+
+        # 卸载ipa
+        self.button_uninstall_ipa = Button(self.root, text="卸载ipa", command=self.thread_uninstall_ipa)
+        self.button_uninstall_ipa.grid(row=index + 1, column=3, stick='w')
+
+        # 日志
+        self.button_syslog = Button(self.root, text="抓iOS日志", command=self.logcat_c)
+        self.button_syslog.grid(row=index + 1, column=7, stick='w')
 
     def destroy(self):
         self.select_apk_button.destroy()
@@ -75,6 +86,9 @@ class InstallItem:
         self.button_pull_GCloudlog.destroy()
         self.button_delete_Corelog.destroy()
         self.button_pull_Corelog.destroy()
+        self.button_install_ipa.destroy()
+        self.button_uninstall_ipa.destroy()
+        self.button_syslog.destroy()
         self.entry_apk.destroy()
         self.lab_device.destroy()
 
@@ -90,9 +104,9 @@ class InstallItem:
         else:
             device_name = self.device
 
-        cmd_delete = 'adb -s {0} shell rm -rf {1}'.format(self.device, device_log_path)
-        print(cmd_delete)
-        os.system(cmd_delete)
+        adb_delete = 'adb -s {0} shell rm -rf {1}'.format(self.device, device_log_path)
+        print(adb_delete)
+        os.system(adb_delete)
 
 
     def pull_GCloudlog(self):
@@ -116,8 +130,8 @@ class InstallItem:
 
         if not os.path.exists(computer_copy_path):
             os.makedirs(computer_copy_path)
-        cmd_pull = 'adb -s {0} pull {1} {2}'.format(self.device, device_log_path, computer_copy_path)
-        os.system(cmd_pull)
+        adb_pull = 'adb -s {0} pull {1} {2}'.format(self.device, device_log_path, computer_copy_path)
+        os.system(adb_pull)
 
 
     def delete_Corelog(self):
@@ -131,9 +145,9 @@ class InstallItem:
         else:
             device_name = self.device
 
-        cmd_delete2 = 'adb -s {0} shell rm -rf {1}'.format(self.device, device_Corelog_path)
-        print(cmd_delete2)
-        os.system(cmd_delete2)
+        adb_delete2 = 'adb -s {0} shell rm -rf {1}'.format(self.device, device_Corelog_path)
+        print(adb_delete2)
+        os.system(adb_delete2)
 
 
     def pull_Corelog(self):
@@ -158,8 +172,8 @@ class InstallItem:
         if not os.path.exists(computer_copy_path):
             os.makedirs(computer_copy_path)
 
-        cmd_pull = 'adb -s {0} pull {1} {2}'.format(self.device, device_Corelog_path, computer_copy_path)
-        os.system(cmd_pull)
+        adb_pull = 'adb -s {0} pull {1} {2}'.format(self.device, device_Corelog_path, computer_copy_path)
+        os.system(adb_pull)
 
     def logcat_c(self):
         print("device",self.device)
@@ -169,9 +183,9 @@ class InstallItem:
             device_name = self.device
 
 
-        cmd_logcat_c = 'adb -s {0} logcat -c'.format(self.device)
-        print(cmd_logcat_c)
-        os.popen(cmd_logcat_c)
+        adb_logcat_c = 'adb -s {0} logcat -c'.format(self.device)
+        print(adb_logcat_c)
+        os.popen(adb_logcat_c)
 
     def logcat_log(self):
         print("device",self.device)
@@ -191,9 +205,9 @@ class InstallItem:
         if not os.path.exists(computer_save_path):
             os.makedirs(computer_save_path)
         logcat_name = self.set_file_name() + ".log"
-        cmd_logcat = 'adb -s {0} logcat -v time >{1}' .format(self.device, computer_save_path) + logcat_name
-        print(cmd_logcat)
-        os.popen(cmd_logcat)
+        adb_logcat = 'adb -s {0} logcat -v time >{1}' .format(self.device, computer_save_path) + logcat_name
+        print(adb_logcat)
+        os.popen(adb_logcat)
 
     def choose_file(self):
         selectFileName = tkinter.filedialog.askopenfilename(title='选择文件')  # 选择文件
@@ -207,22 +221,35 @@ class InstallItem:
         # 安装Apk
         # print(self.entry_apk.get())
         # 通过选择Apk根目录来安装
-        # cmd_install = "adb -s {0} install -r {1}/{2}".format(self.device,self.DeviceManager.apk_path.get(),self.entry_apk.get())
+        # adb_install = "adb -s {0} install -r {1}/{2}".format(self.device,self.DeviceManager.apk_path.get(),self.entry_apk.get())
         # 选择Apk文件安装
-        cmd_install = 'adb -s {0} install -r "{1}"'.format(self.device,self.entry_apk.get())
-        print("installing ", cmd_install)
-        os.system(cmd_install)
+        adb_install = 'adb -s {0} install -r "{1}"'.format(self.device,self.entry_apk.get())
+        print("installing ", adb_install)
+        os.system(adb_install)
 
     def uninstall_apk(self):
         # 卸载apk
-        # cmd_install = "adb -s " + self.device + " install -r " + self.DeviceManager.get_apk_path() + "\\" + self.entry_apk.get())
-        cmd_uninstall = "adb -s {0} uninstall com.tencent.itop.example".format(self.device)
-        print("uninstalling ", cmd_uninstall)
-        os.system(cmd_uninstall)
+        # adb_install = "adb -s " + self.device + " install -r " + self.DeviceManager.get_apk_path() + "\\" + self.entry_apk.get())
+        adb_uninstall = "adb -s {0} uninstall com.tencent.itop.example".format(self.device)
+        print("uninstalling ", adb_uninstall)
+        os.system(adb_uninstall)
+
+    def install_ipa(self):
+        # 安装ipa
+        tid_install = "tidevice --udid $UDID install {0}".format(self.entry_apk.get())
+        print("installing ", tid_install)
+        os.system(tid_install)
+
+    def uninstall_ipa(self):
+        # 卸载apk
+        # adb_install = "adb -s " + self.device + " install -r " + self.DeviceManager.get_apk_path() + "\\" + self.entry_apk.get())
+        tid_uninstall = "tidevice uninstall com.tencent.itop.example"
+        print("uninstalling ", tid_uninstall)
+        os.system(tid_uninstall)
 
     def thread_choose_file(self):
-        t1 = threading.Thread(target=self.choose_file, )
-        t1.start()
+        t = threading.Thread(target=self.choose_file, )
+        t.start()
 
     def thread_install_apk(self):     #用多线程来安装，不然点击安装后会卡住主线程，无法实现多apk同时安装
         t2 = threading.Thread(target=self.install_apk, )
@@ -231,3 +258,13 @@ class InstallItem:
     def thread_uninstall_apk(self):   #用多线程来卸载，不然点击卸载后可能会卡住主线程
         t3 = threading.Thread(target=self.uninstall_apk, )
         t3.start()
+
+    def thread_install_ipa(self):  # 用多线程来安装，不然点击安装后会卡住主线程，无法实现多apk同时安装
+        print("多线程安装ipa")
+        t5 = threading.Thread(target=self.install_ipa, )
+        t5.start()
+
+    def thread_uninstall_ipa(self):  # 用多线程来卸载，不然点击卸载后可能会卡住主线程
+        print("多线程卸载ipa")
+        t6 = threading.Thread(target=self.uninstall_ipa, )
+        t6.start()
