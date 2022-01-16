@@ -24,6 +24,8 @@ class InstallItem:
         self.DeviceManager = DeviceManager
         self.device  = device
         self.root = root
+        # print("BatchInstaller-index:",index)
+        # print("BatchInstaller-device:",device)
         # 选择Apk
         self.entry_default = StringVar()
         self.entry_default.set("请选择一个Apk文件")
@@ -34,8 +36,8 @@ class InstallItem:
         self.entry_apk = Entry(self.root, width=45, textvariable=self.entry_default)
         self.entry_apk.grid(row=index+1,column=2,stick='w')
 
-        self.select_apk_button = tk.Button(self.root, text ="选择Apk", command = self.thread_choose_file)
-        self.select_apk_button.grid(row=index+1,column=5,stick='w')
+        self.button_select_apk = tk.Button(self.root, text ="选择Apk", command = self.thread_choose_file)
+        self.button_select_apk.grid(row=index+1,column=5,stick='w')
 
         # 安装
         self.button_install = Button(self.root, text="安装", bg="LightSteelBlue", command=self.thread_install_apk)
@@ -65,6 +67,18 @@ class InstallItem:
         self.button_pull_Corelog.grid(row=index+1, column=12, stick='w')
 
         # 安装ipa
+        self.entry_ipa_default = StringVar()
+        self.entry_ipa_default.set("请选择一个ipa文件")
+
+        self.lab_device = tk.Label(self.root, text=device)
+        self.lab_device.grid(row=index + 1, column=1, stick='w')
+
+        self.entry_apk = Entry(self.root, width=45, textvariable=self.entry_default)
+        self.entry_apk.grid(row=index + 1, column=2, stick='w')
+
+        self.button_select_apk = tk.Button(self.root, text="选择ipa", command=self.thread_choose_file)
+        self.button_select_apk.grid(row=index + 1, column=5, stick='w')
+
         self.button_install_ipa = Button(self.root, text="安装ipa", bg="LightSteelBlue", command=self.thread_install_ipa)
         self.button_install_ipa.grid(row=index + 1, column=4, stick='w')
 
@@ -77,7 +91,9 @@ class InstallItem:
         self.button_syslog.grid(row=index + 1, column=7, stick='w')
 
     def destroy(self):
-        self.select_apk_button.destroy()
+        self.lab_device.destroy()
+        self.entry_apk.destroy()
+        self.button_select_apk.destroy()
         self.button_install.destroy()
         self.button_uninstall.destroy()
         self.button_logcat_c.destroy()
@@ -89,7 +105,6 @@ class InstallItem:
         self.button_install_ipa.destroy()
         self.button_uninstall_ipa.destroy()
         self.button_syslog.destroy()
-        self.entry_apk.destroy()
         self.lab_device.destroy()
 
 
@@ -181,7 +196,6 @@ class InstallItem:
             device_name = self.device.replace(':', '-')  # 这里用来处理模拟器多开，冒号在路径名中无法使用，所以替换一下
         else:
             device_name = self.device
-
 
         adb_logcat_c = 'adb -s {0} logcat -c'.format(self.device)
         print(adb_logcat_c)
