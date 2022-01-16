@@ -18,15 +18,14 @@ import getpass
 from BatchInstall import InstallItem
 
 
-
 class DeviceManager():
 
     def __init__(self):
-        try:
-            adb_connect = 'adb connect 127.0.0.1:5555'  # 腾讯手游模拟器比较常用，所以写在程序里
-            os.system(adb_connect)
-        except EXCEPTION as e:
-            print(e)
+        # try:
+        #     cmd = 'adb connect 127.0.0.1:5555'  # 腾讯手游模拟器比较常用，所以写在程序里
+        #     os.system(cmd)
+        # except EXCEPTION as e:
+        #     print(e)
 
         self.root = Tk()
         self.root.geometry('1345x450')
@@ -70,11 +69,10 @@ class DeviceManager():
         self.increase_num.set(1)
 
         self.apk_name = StringVar()
-        self.apk_name.set("请选择一个apk安装")
-        self.ipa_name = StringVar()
-        self.ipa_name.set("请选择一个ipa安装")
+        self.apk_name.set("请输入apk完整包名")
         self.select_device_list =[]
         self.device_list = self.get_device_list()
+        self.device_iOS_list = self.get_device_iOS_list()
         self.cb_list =[]
         self.pool = multiprocessing.Pool(processes=6)
         self.button_list=[]
@@ -98,6 +96,7 @@ class DeviceManager():
 
     # def get_apk_path(self):#得到apk更目录路径
     #     return self.apk_path
+
 
     def draw_log_path(self):
         label_logcat=tk.Label(self.root, text="Logcat日志保存外层路径:")
@@ -131,17 +130,17 @@ class DeviceManager():
         button_refresh = Button(self.root, text="刷新adb", bg="LightSteelBlue", command=lambda: self.refresh_adb())
         button_refresh.grid(row=0, column=7)
 
-        # 刷新tid
-        button_refresh_tid = Button(self.root, text="刷新tid", bg="LightSteelBlue", command=lambda: self.refresh_tid())
-        button_refresh_tid.grid(row=0, column=8)
-
         # 关闭adb
         button_close_adb = Button(self.root, text="关闭adb", bg="DarkGray",command=self.close_adb)
         button_close_adb.grid(row=0, column=9)
 
+        # 刷新tid
+        button_refresh = Button(self.root, text="刷新tid", bg="LightSteelBlue", command=lambda: self.refresh_tid())
+        button_refresh.grid(row=0, column=8)
+
         # 重启tid
-        # button_close_adb = Button(self.root, text="重启tid", bg="DarkGray", command=self.reboot_tid())
-        # button_close_adb.grid(row=0, column=10)
+        button_close_adb = Button(self.root, text="重启tid", bg="DarkGray", command=self.reboot_tid)
+        button_close_adb.grid(row=0, column=10)
 
         # 连接模拟器
         button_connect_device = Button(self.root, text="连接模拟器", command=self.start_connect_device_thread)
@@ -170,68 +169,83 @@ class DeviceManager():
         print("关闭 adb")
         try:
             adb_kill = 'adb kill-server'
-            os.system(adb_kill)
+            adb_start = 'adb start-server'
+            os.popen(adb_kill)
+            os.popen(adb_start)
         except EXCEPTION as e:
             print(e)
 
-    # def reboot_tid(self):
-    #     print("重启 tid")
-    #     try:
-    #         tid_reboot = 'tidevice reboot'
-    #         os.system(tid_reboot)
-    #     except EXCEPTION as e:
-    #         print(e)
+    def reboot_tid(self):
+        print("重启 adb")
+        try:
+            tid_reboot = 'tidevice reboot'
+            os.popen(tid_reboot)
+        except EXCEPTION as e:
+            print(e)
 
 
     def refresh_adb(self):
         print("刷新adb")
         try:
-            adb_refresh1 = 'adb devices'
-            adb_refresh2 = 'adb connect 127.0.0.1:5555'  #解决如果先运行工具（脚本），再启动腾讯手游助手，刷新 adb 手游助手刷不出来的问题
-            os.popen(adb_refresh1)
-            os.popen(adb_refresh2)
+            cmd1 = 'adb devices'
+            cmd2 = 'adb connect 127.0.0.1:5555'  #解决如果先运行工具（脚本），再启动腾讯手游助手，刷新 adb 手游助手刷不出来的问题
+            os.popen(cmd1)
+            os.popen(cmd2)
         except EXCEPTION as e:
             print(e)
+
+        old_device_list = self.device_list   # 原来连接的设备
+        new_device_list = self.get_device_list()  # ==>adb device
+        #old-new 的差集用old_new表示
+        old_new  = set(old_device_list)-set(new_device_list)
+        for item in  (self.install_item_list):
+            if item.device in list(old_new):
+                item.destroy()
+
+        #new-old 的差集用new_old表示
+        new_old = set(new_device_list)-set(old_device_list)         # 原来的设备 a  新插入一台b   ==b
+        start_draw_index =  len(set(old_device_list)&set(new_device_list))  # a—>len
+        # old_new_jiao = set(old_device_list)&set(new_device_list)
+        # cur_device = list(new_old)
+        self.draw_installer_item(list(new_old),start_draw_index+1)    # ((b),1)
+        self.device_list=new_device_list
 
     def refresh_tid(self):
         print("刷新tid")
         try:
-            tid_refresh = 'tidevice list'
-            os.popen(tid_refresh)
+            refresh_tid = 'tidevice list'
+            os.popen(refresh_tid)
         except EXCEPTION as e:
             print(e)
 
-        old_device_list = self.device_list
-        new_device_list = self.get_device_list()
+        old_device_iOS_list = self.device_iOS_list # 原来连接的设备
+        new_device_iOS_list = self.get_device_iOS_list()  # ==>adb device
         #old-new 的差集用old_new表示
-        old_new  = set(old_device_list)-set(new_device_list)
-        print("new-devicelist:",list(new_device_list))
-        print("old-new:",list(old_new))
-        for item in self.install_item_list:
-            if item.device in list(old_new):
-                print(item.device)
+        old_new1  = set(old_device_iOS_list)-set(new_device_iOS_list)
+        for item in  (self.install_item_list):
+            if item.device in list(old_new1):
                 item.destroy()
 
         #new-old 的差集用new_old表示
-        new_old = set(new_device_list)-set(old_device_list)
-        start_draw_index =  len(set(old_device_list)&set(new_device_list))
-        self.draw_installer_item(list(new_old),start_draw_index)
-        self.device_list=new_device_list
+        new_old1 = set(new_device_iOS_list)-set(old_device_iOS_list)         # 原来的设备 a  新插入一台b   ==b
+        start_draw_index1 =  len(set(old_device_iOS_list)&set(new_device_iOS_list))  # a—>len
+        # old_new_jiao = set(old_device_list)&set(new_device_list)
+        # cur_device = list(new_old)
+        self.draw_installer_item(list(new_old1),start_draw_index1+1)    # ((b),1)
+        self.device_list=new_device_iOS_list
 
     def connect_device(self,index):
         try:
             port =self.init_port.get()+index
             print(port)
-            adb_connect = 'adb connect 127.0.0.1:'+str(port)
-            print(adb_connect)
-            os.system(adb_connect)
+            cmd = 'adb connect 127.0.0.1:'+str(port)
+            print(cmd)
+            os.system(cmd)
         except:
             print("连接第%d个模拟器有问题" % index)
 
     def start_connect_device_thread(self):
-        print(self.increase_num.get())
         for i in range(self.increase_num.get()):
-            print(i)
             t= threading.Thread(target=self.connect_device,args=(i,))
             t.start()
 
@@ -255,14 +269,20 @@ class DeviceManager():
 
     def draw_installer_item(self,device_list,old_device_num=0):
         for index,device in enumerate(device_list):
-            start_row=index+old_device_num+2
-            print(start_row)
+            start_row=index + old_device_num + 2
             install_item=InstallItem(self.root,device,start_row,self)
             self.install_item_list.append(install_item)
             self.root.grid_columnconfigure((0,3,5), minsize=20)
 
+    def draw_installer_iOS_item(self, device_iOS_list, old_device_num1=0):
+        for index_iOS, device in enumerate(device_iOS_list):
+            start_row_iOS = index_iOS + old_device_num1 + 2
+            install_item1 = InstallItem(self.root, device, start_row_iOS, self)
+            self.install_item_list.append(install_item1)
+            self.root.grid_columnconfigure((0, 3, 5), minsize=20)
+
     def draw_label_text(self):
-        label_text1 = tk.Label(self.root, text="提示：点击[关闭adb]/[停止抓logcat日志]之后需要重新点击2次[刷新adb]",
+        label_text1 = tk.Label(self.root, text="提示：如果新连接设备，点击[刷新adb]刷不出来，需要点击[关闭adb]之后再[刷新adb]或直接重启工具",
                               foreground="Yellow",background="Gray",)
         label_text1.place(x=703,y=62)
 
@@ -274,14 +294,25 @@ class DeviceManager():
         self.draw_label_text()
         self.root.mainloop()
 
+
     def get_device_list(self):  #得到设备列表
         os.system("adb devices")
         res = os.popen("adb devices").readlines()
-        print("res:",res)
-        device_list = [sub.split('\t')[0] for sub in res[1:-1]]
-        print(device_list)
-       # device_list = [sub for sub in res[1:-1]]
+        device_list1 = [sub.split('\t')[0] for sub in res[1:-1]]
+        # device_list1 = [sub.split('\n')[0] for sub in res[1:-1]]
+        # device_list = [sub.replace('\t','-') for sub in device_list1[:]]
+        device_list = list(reversed(device_list1))
         return device_list
+
+    # 获取tid连接上的iOS
+    def get_device_iOS_list(self):  #得到设备列表
+        os.system("tidevice list")
+        res_iOS = os.popen("tidevice list").readlines()
+        device_iOS_list = [sub.split('\t')[0] for sub in res_iOS[:]]
+        print("devcelist:",device_iOS_list)
+        # device_list1 = [sub.split('\n')[0] for sub in res[1:-1]]
+        # device_list = [sub.replace('\t','-') for sub in device_list1[:]]
+        return device_iOS_list
 
     def open_file(self,path):  #打开文件
         os.system("explorer "+path)
