@@ -8,7 +8,7 @@
 import multiprocessing
 from DeviceManager import DeviceManager
 
-# Main.py   启动工具入口脚本
+# BatchInstaller.py   启动工具入口脚本
 
 
 
