@@ -28,7 +28,7 @@ class DeviceManager():
             print(e)
 
         self.root = Tk()
-        self.root.geometry('1480x420')
+        self.root.geometry('1615x420')
         self.root.title("DeviceManager")
         self.user = getpass.getuser()
         platform_system = platform.system()
@@ -294,10 +294,10 @@ class DeviceManager():
     def draw_label_text(self):
         label_text1 = tk.Label(self.root, text="提示：点击[关闭adb]/[停止抓logcat日志]之后需要重新点击2次[刷新adb]",
                               foreground="Yellow",background="Gray",)
-        label_text1.place(x=703,y=62)
+        label_text1.place(x=772,y=62)
         label_text2 = tk.Label(self.root, text="已知问题：点击[刷新adb]会偶现卡顿现象，导出的日志达到100M左右会卡顿",
                               foreground="Yellow",background="Gray",)
-        label_text2.place(x=703,y=85.5)
+        label_text2.place(x=772,y=85.5)
 
     def mainloop(self):
         self.draw_log_path()
