@@ -73,6 +73,11 @@ class DeviceManager():
 
         self.increase_num = IntVar()
         self.increase_num.set(1)
+
+        self.default_text = StringVar()
+        # 输入框默认文本
+        self.default_text.set("比如Wx号")
+
         self.apk_name = StringVar()
         self.apk_name.set("请选择一个Apk或输入apk完整路径")
         self.device_list = self.get_device_list()
@@ -105,6 +110,9 @@ class DeviceManager():
 
     # def get_apk_path(self):	#得到apk更目录路径
     #     return self.apk_path
+
+    def get_default_text(self):
+        return self.default_text.get()
 
     def item_device_return(self):
         self.device_list = StringVar()
@@ -191,6 +199,13 @@ class DeviceManager():
 
         entry_device_num = Entry(self.root, width=5, textvariable=self.increase_num)
         entry_device_num.grid(row=1, column=10, sticky='w')
+
+
+        label_device_input = tk.Label(self.root, text="传入文本:")  # 模拟器多开时想要连接的数量
+        label_device_input.grid(row=1, column=11, sticky='w')
+
+        entry_device_input = Entry(self.root, width=9, textvariable=self.default_text)
+        entry_device_input.grid(row=1, column=12, sticky='w')
 
     def close_adb(self):
         print("关闭 adb")
