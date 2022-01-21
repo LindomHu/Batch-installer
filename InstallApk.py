@@ -70,6 +70,9 @@ class BatchInstallApk:
         self.button_pull_GVoicelog = Button(self.root, text="拉GVoice日志", bg="LightSteelBlue", command=self.pull_GVoicelog)
         self.button_pull_GVoicelog.grid(row=index+3, column=13, stick='w')
 
+        self.button_input_Text = Button(self.root, text="传text", command=self.input_text)
+        self.button_input_Text.grid(row=index+3, column=14, stick='w')
+
     def destroy(self):
         self.entry_apk.destroy()
         self.button_select_apk.destroy()
@@ -85,6 +88,7 @@ class BatchInstallApk:
         self.button_pull_GVoicelog.destroy()
         self.entry_apk.destroy()
         self.lab_device.destroy()
+        self.button_input_Text.destroy()
 
 
     def delete_GCloudlog(self):
@@ -246,6 +250,11 @@ class BatchInstallApk:
     def set_file_name(self):#设置文件名
          now=time.strftime("%Y-%m-%d-%H-%M-%S",time.localtime(time.time()))
          return now
+
+    def input_text(self):#设置文件名
+        cmd_input_text = 'adb -s {0} shell input text "{1}"'.format(self.device, self.DeviceManager.get_default_text())
+        print("installing ", cmd_input_text )
+        os.system(cmd_input_text)
 
     def install_apk(self):
         # 安装Apk
