@@ -1,7 +1,7 @@
 ## Batch installer3.0
 
 ## 工具介绍
-实现批量安装Apk的安装器（以下简称Bti），依赖Python3环境。支持Windows/Mac系统，支持批量安装不同的Apk，支持抓取Logcat实时日志、导出Cloud/GCloudCore日志。因为采用了多线程，批量安装时单台设备安装的时间比手动要慢一些。
+实现批量安装Apk的安装器（以下简称Bti），依赖Python3环境。支持Windows/Mac系统，支持批量安装不同的Apk，支持抓取Logcat实时日志、导出组件日志。因为采用了多线程，批量安装时单台设备安装的时间比手动要慢一些。
 
 ## 依赖环境
 **Python3**  
@@ -26,6 +26,6 @@
 
 ## 其他说明
 + 使用micro或type-c数据线插入Androi设备，需要点击[刷新adb]，点击[关闭adb]或者[停止抓logcat日志]按钮之后需要重新点击2次[刷新adb]。
-+ 点击卸载的button默认卸载的是packageName为com.tencent.itop.example的Apk。
-+ 当前已知问题：导出日志的设备有大量的GCloud/GCloudCore日志时，（200M以上）此时导出GCloud/GCoudCore日志界面会出现卡顿情况。
++ 点击卸载的button默认卸载的是packageName为xxxxx的Apk。
++ 当前已知问题：导出日志的设备有大量的组件日志时，（200M以上）此时界面会出现卡顿情况。
 
