@@ -27,7 +27,7 @@ class DeviceManager():
             print(e)
 
         self.root = Tk()
-        self.root.geometry('1615x420')
+        self.root.geometry('1836x450')
         self.root.title("DeviceManager")
         self.user = getpass.getuser()
         platform_system = platform.system()
@@ -188,18 +188,17 @@ class DeviceManager():
         button_close_adb.grid(row=0, column=12)
 
     def draw_device_connect(self):
-        label_device_start_port = tk.Label(self.root, text="起始端口:")
-        label_device_start_port.grid(row=1, column=7, sticky='w')
+        label_device_start_port = tk.Label(self.root,text="起始端口:")
+        label_device_start_port.grid(row=1,column=7,sticky='w')
 
         entry_device_start_port = Entry(self.root, width=5, textvariable=self.init_port)
-        entry_device_start_port.grid(row=1, column=8, sticky='w')
+        entry_device_start_port.grid(row=1,column=8,sticky='w')
 
-        label_device_num = tk.Label(self.root, text="连接数量:")  # 模拟器多开时想要连接的数量
+        label_device_num = tk.Label(self.root, text="连接数量:")#模拟器多开时想要连接的数量
         label_device_num.grid(row=1, column=9, sticky='w')
 
         entry_device_num = Entry(self.root, width=5, textvariable=self.increase_num)
         entry_device_num.grid(row=1, column=10, sticky='w')
-
 
         label_device_input = tk.Label(self.root, text="传入文本:")  # 模拟器多开时想要连接的数量
         label_device_input.grid(row=1, column=11, sticky='w')
