@@ -17,6 +17,7 @@ import threading
 import platform
 
 
+
 class BatchInstallApk:
     def __init__(self,root,device,index,DeviceManager):
         self.DeviceManager = DeviceManager
@@ -25,7 +26,7 @@ class BatchInstallApk:
 
         # 选择Apk
         self.entry_default = StringVar()
-        self.entry_default.set("请选择一个待安装的apk文件或输入apk文件的路径")
+        self.entry_default.set("请选择一个待安装的Apk文件或输入Apk文件的路径")
 
         self.root = root
         self.lab_device = tk.Label(self.root, text=device)
@@ -34,7 +35,7 @@ class BatchInstallApk:
         self.entry_apk = Entry(self.root, width=45, textvariable=self.entry_default)
         self.entry_apk.grid(row=index+3,column=2,stick='w')
 
-        self.button_select_apk = tk.Button(self.root, text ="选择apk", command = self.thread_choose_file)
+        self.button_select_apk = tk.Button(self.root, text ="选择Apk", command = self.thread_choose_file)
         self.button_select_apk.grid(row=index+3,column=5,stick='w')
 
         # 安装
@@ -45,39 +46,44 @@ class BatchInstallApk:
         self.button_uninstall = Button(self.root, text="卸载", command=self.thread_uninstall_apk)
         self.button_uninstall.grid(row=index+3, column=3, stick='w')
 
+        # 启动Demo
+        self.button_launch_demo = Button(self.root,text="启动Demo", bg="LightSteelBlue", command=self.thread_launch_demo)
+        self.button_launch_demo.grid(row=index+3,column=6,stick='w')
+
         # 日志
         self.button_logcat_c = Button(self.root,text="删logcat日志",command=self.logcat_c)
-        self.button_logcat_c.grid(row=index+3,column=6,stick='w')
+        self.button_logcat_c.grid(row=index+3,column=7,stick='w')
 
         self.button_logcat_log = Button(self.root,text="抓logcat日志",bg="LightSteelBlue", command=self.logcat_log)
-        self.button_logcat_log.grid(row=index+3,column=7,stick='w')
+        self.button_logcat_log.grid(row=index+3,column=8,stick='w')
 
         self.button_delete_GCloudlog = Button(self.root,text="删GCloud日志",command=self.delete_GCloudlog)
-        self.button_delete_GCloudlog.grid(row=index+3,column=8,stick='w')
+        self.button_delete_GCloudlog.grid(row=index+3,column=9,stick='w')
 
         self.button_pull_GCloudlog = Button(self.root,text="拉GCloud日志",bg="LightSteelBlue", command=self.pull_GCloudlog)
-        self.button_pull_GCloudlog.grid(row=index+3,column=9,stick='w')
+        self.button_pull_GCloudlog.grid(row=index+3,column=10,stick='w')
 
         self.button_delete_Corelog = Button(self.root, text="删GCloudCore日志", command=self.delete_Corelog)
-        self.button_delete_Corelog.grid(row=index+3, column=10, stick='w')
+        self.button_delete_Corelog.grid(row=index+3, column=11, stick='w')
 
         self.button_pull_Corelog = Button(self.root, text="拉GCloudCore日志", bg="LightSteelBlue", command=self.pull_Corelog)
-        self.button_pull_Corelog.grid(row=index+3, column=11, stick='w')
+        self.button_pull_Corelog.grid(row=index+3, column=12, stick='w')
 
         self.button_delete_GVoicelog = Button(self.root, text="删GVoice日志", command=self.delete_GVoicelog)
-        self.button_delete_GVoicelog.grid(row=index+3, column=12, stick='w')
+        self.button_delete_GVoicelog.grid(row=index+3, column=13, stick='w')
 
         self.button_pull_GVoicelog = Button(self.root, text="拉GVoice日志", bg="LightSteelBlue", command=self.pull_GVoicelog)
-        self.button_pull_GVoicelog.grid(row=index+3, column=13, stick='w')
+        self.button_pull_GVoicelog.grid(row=index+3, column=14, stick='w')
 
-        self.button_input_Text = Button(self.root, text="传text", command=self.input_text)
-        self.button_input_Text.grid(row=index+3, column=14, stick='w')
+        self.button_input_Text = Button(self.root, text="传文本到输入框", command=self.input_text)
+        self.button_input_Text.grid(row=index+3, column=15, stick='w')
 
     def destroy(self):
         self.entry_apk.destroy()
         self.button_select_apk.destroy()
         self.button_install.destroy()
         self.button_uninstall.destroy()
+        self.button_launch_demo.destroy()
         self.button_logcat_c.destroy()
         self.button_logcat_log.destroy()
         self.button_delete_GCloudlog.destroy()
@@ -273,9 +279,19 @@ class BatchInstallApk:
         print("uninstalling ", cmd_uninstall)
         os.system(cmd_uninstall)
 
+
+    def launch_demo(self):
+        # 卸载apk
+        # cmd_install = "adb -s " + self.device + " install -r " + self.DeviceManager.get_apk_path() + "\\" + self.entry_apk.get())
+        cmd_launch = "adb -s {0} shell am start -n com.tencent.itop.example/com.itop.gcloud.msdk.core.policy.MSDKPolicyActivity".format(self.device)
+        print("launching ", cmd_launch)
+        os.system(cmd_launch)
+
+
     def thread_choose_file(self):
         t1 = threading.Thread(target=self.choose_file, )
         t1.start()
+
 
     def thread_install_apk(self):     #用多线程来安装，不然点击安装后会卡住主线程，无法实现多apk同时安装
         t2 = threading.Thread(target=self.install_apk, )
@@ -284,3 +300,8 @@ class BatchInstallApk:
     def thread_uninstall_apk(self):   #用多线程来卸载，不然点击卸载后可能会卡住主线程
         t3 = threading.Thread(target=self.uninstall_apk, )
         t3.start()
+
+
+    def thread_launch_demo(self):     #用多线程来启动
+        t4 = threading.Thread(target=self.launch_demo, )
+        t4.start()
