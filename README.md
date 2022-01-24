@@ -8,9 +8,7 @@
 **adb**
 
 ## 界面介绍
-
-![avatar](https://github.com/LindomHu/Python-Study_90/blob/ce1d18d88ee94a2e2b66795106ce184d0621c9cc/OldBoyStudy/16415386396895.png?raw=true)
-
+暂无。
 
 ## 脚本简要介绍
 + InstallApk.py：导入tkinter模块，主要定义了一些界面的button。将安装Apk、抓实时日志、导出日志的adb命令封装成了函数等。
