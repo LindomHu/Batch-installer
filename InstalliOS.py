@@ -32,8 +32,8 @@ class BatchInstalliOS:
         self.lab_device = tk.Label(self.root, text=device_iOS)
         self.lab_device.grid(row=index_iOS+2,column=1,stick='w')
 
-        self.entry_apk = Entry(self.root, width=45, textvariable=self.entry_default)
-        self.entry_apk.grid(row=index_iOS+2,column=2,stick='w')
+        self.entry_ipa = Entry(self.root, width=45, textvariable=self.entry_default)
+        self.entry_ipa.grid(row=index_iOS+2,column=2,stick='w')
 
         # 选择ipa
         self.select_ipa_button = tk.Button(self.root, text="选择 ipa", command=self.thread_choose_file)
@@ -48,7 +48,7 @@ class BatchInstalliOS:
         self.button_uninstall_ipa.grid(row=index_iOS+2, column=3, stick='w')
 
         # 启动GCloud-demo
-        self.button_launch_ipa = Button(self.root, text="启动GCloud", command=self.tidevice_launch)
+        self.button_launch_ipa = Button(self.root, text="启动Demo", bg="LightSteelBlue", command=self.tidevice_launch)
         self.button_launch_ipa.grid(row=index_iOS+2, column=6, stick='w')
 
         # 日志
@@ -61,7 +61,7 @@ class BatchInstalliOS:
 
     def destroy(self):
         self.lab_device.destroy()
-        self.entry_apk.destroy()
+        self.entry_ipa.destroy()
         self.select_ipa_button.destroy()
         self.button_install_ipa.destroy()
         self.button_uninstall_ipa.destroy()
@@ -71,7 +71,7 @@ class BatchInstalliOS:
 
     def install_ipa(self):
         # 安装ipa
-        tid_install = 'tidevice --udid {0} install {1}'.format(self.device,self.entry_apk.get())
+        tid_install = 'tidevice --udid {0} install {1}'.format(self.device,self.entry_ipa.get())
         print("installing ", tid_install)
         os.system(tid_install)
 
