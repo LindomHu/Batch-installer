@@ -11,7 +11,7 @@ import tkinter as tk
 from threading import Thread
 from tkinter import *  # 导入 Tkinter 库
 import tkinter.filedialog
-import tidevice
+# import tidevice
 import os
 import time
 import threading
