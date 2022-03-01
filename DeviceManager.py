@@ -11,7 +11,7 @@ import tkinter as tk
 from tkinter import *  # 导入 Tkinter 库
 from tkinter.filedialog import askdirectory
 import multiprocessing
-import tidevice
+# import tidevice
 import threading
 import platform
 import getpass
