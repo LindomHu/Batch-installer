@@ -71,7 +71,7 @@ class BatchInstalliOS:
 
     def install_ipa(self):
         # 安装ipa
-        tid_install = 'tidevice --udid {0} install {1}'.format(self.device,self.entry_ipa.get())
+        tid_install = 'tidevice --udid {0} install "{1}"'.format(self.device,self.entry_ipa.get())
         print("installing ", tid_install)
         os.system(tid_install)
 
