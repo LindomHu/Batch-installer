@@ -15,7 +15,7 @@ import threading
 import platform
 import getpass
 from InstallApk import InstallApk
-from adbutils import device
+# from adbutils import devices
 
 
 class DeviceManager():
@@ -308,4 +308,5 @@ class DeviceManager():
         self.root.mainloop()
 
     def open_file(self,path):  #打开文件
+        print("path:",path)
         os.system("explorer "+path)
